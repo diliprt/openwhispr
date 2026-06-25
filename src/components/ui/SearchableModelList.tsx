@@ -4,6 +4,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { Search } from "lucide-react";
 import { Input } from "./input";
 import { ModelCard, type ModelCardOption } from "./ModelCardList";
+import { getRemoteProviderIcon } from "../../utils/providerIcons";
 
 // Above this count, OpenAICompatiblePanel switches from the plain list to this
 // searchable/grouped/virtualized variant. Mirrors LanguageSelector's threshold.
@@ -19,6 +20,15 @@ type Row =
 function providerPrefix(value: string): string | null {
   const slash = value.indexOf("/");
   return slash > 0 ? value.slice(0, slash) : null;
+}
+
+// The group header already names the provider, so drop the "provider/" prefix
+// from the label and show the provider's icon on the row instead.
+function toDisplayOption(model: ModelCardOption): ModelCardOption {
+  const prefix = providerPrefix(model.value);
+  if (!prefix) return model;
+  const { icon, invertInDark } = getRemoteProviderIcon(prefix);
+  return { ...model, label: model.value.slice(prefix.length + 1), icon, invertInDark };
 }
 
 interface SearchableModelListProps {
@@ -54,7 +64,8 @@ export default function SearchableModelList({
       ) {
         continue;
       }
-      const key = providerPrefix(model.value) ?? OTHER_GROUP;
+      const prefix = providerPrefix(model.value);
+      const key = prefix ? prefix.replace(/^~/, "") : OTHER_GROUP;
       const bucket = groups.get(key);
       if (bucket) bucket.push(model);
       else groups.set(key, [model]);
@@ -74,7 +85,11 @@ export default function SearchableModelList({
         label: t("reasoning.custom.selectedGroup"),
         count: 1,
       });
-      result.push({ type: "model", key: `m:${selectedOption.value}`, data: selectedOption });
+      result.push({
+        type: "model",
+        key: `m:${selectedOption.value}`,
+        data: toDisplayOption(selectedOption),
+      });
     }
     for (const key of sortedKeys) {
       const bucket = groups.get(key)!.sort((a, b) => a.label.localeCompare(b.label));
@@ -85,7 +100,7 @@ export default function SearchableModelList({
         count: bucket.length,
       });
       for (const model of bucket) {
-        result.push({ type: "model", key: `m:${model.value}`, data: model });
+        result.push({ type: "model", key: `m:${model.value}`, data: toDisplayOption(model) });
       }
     }
     return result;
