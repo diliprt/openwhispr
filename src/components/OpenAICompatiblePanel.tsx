@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import ApiKeyInput from "./ui/ApiKeyInput";
 import ModelCardList from "./ui/ModelCardList";
+import SearchableModelList, { MODEL_SEARCH_THRESHOLD } from "./ui/SearchableModelList";
 import { buildApiUrl, normalizeBaseUrl } from "../config/constants";
 import { isSecureEndpoint } from "../utils/urlUtils";
 
@@ -317,7 +318,20 @@ export default function OpenAICompatiblePanel({
             )}
           </>
         )}
-        <ModelCardList models={displayedModels} selectedModel={model} onModelSelect={setModel} />
+        {displayedModels.length > MODEL_SEARCH_THRESHOLD ? (
+          <SearchableModelList
+            models={displayedModels}
+            selectedModel={model}
+            onModelSelect={setModel}
+          />
+        ) : (
+          <ModelCardList
+            models={displayedModels}
+            selectedModel={model}
+            onModelSelect={setModel}
+            truncateDescription
+          />
+        )}
       </div>
     </>
   );
