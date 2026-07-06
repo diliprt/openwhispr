@@ -1,6 +1,6 @@
 # B-003 — Remove vendor cloud services: sync, billing, usage, workspaces, sharing
 
-- Status: ready
+- Status: done
 - Depends on: B-002, B-007 (B-007 removes the openwhispr.com reference inside googleCalendarOAuth.js — this brief's grep gate cannot pass before it)
 - Screens: existing Settings page (Workspace/Billing tabs removed), Notes views (share-to-cloud removed)
 
@@ -20,12 +20,12 @@ Out:
 - Local `db-*-from-cloud` / `db-mark-*-synced` handlers and `cloud_id` columns in `src/helpers/database.js` — dead but local-only; swept in B-006. Never write a schema migration that drops columns.
 
 ## Acceptance criteria
-- [ ] `grep -rn "openwhispr\.com\|OPENWHISPR_API_URL" src main.js preload.js` returns nothing.
-- [ ] `grep -rn "cloud-api-request\|cloud-transcribe\|cloud-reason\|cloud-usage\|cloud-checkout\|cloud-health-check" src main.js preload.js` returns nothing.
-- [ ] No billing, plan, upgrade, usage-meter, workspace, team, or invitation UI renders anywhere.
-- [ ] Note create/edit/delete, folders, snippets, and dictionary work against local SQLite (existing behavior — verify nothing regressed by exercising the note tools' code paths in tests).
-- [ ] The BYO-key provider settings still list OpenAI/Anthropic/Groq/Azure/Mistral/Gemini with local as default.
-- [ ] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
+- [x] `grep -rn "openwhispr\.com\|OPENWHISPR_API_URL" src main.js preload.js` returns nothing.
+- [x] `grep -rn "cloud-api-request\|cloud-transcribe\|cloud-reason\|cloud-usage\|cloud-checkout\|cloud-health-check" src main.js preload.js` returns nothing.
+- [x] No billing, plan, upgrade, usage-meter, workspace, team, or invitation UI renders anywhere.
+- [x] Note create/edit/delete, folders, snippets, and dictionary work against local SQLite (existing behavior — verify nothing regressed by exercising the note tools' code paths in tests).
+- [x] The BYO-key provider settings still list OpenAI/Anthropic/Groq/Azure/Mistral/Gemini with local as default.
+- [x] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
 
 ## Verification
 ```bash

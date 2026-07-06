@@ -26,11 +26,12 @@ Out:
 - Google as a BYO-key AI provider (Gemini via `@ai-sdk/google`) — protected by 0005; do not touch.
 
 ## Acceptance criteria
-- [ ] `grep -rn "googleCalendar\|googleapis.com/calendar\|gcal-" src main.js preload.js` returns nothing.
-- [ ] `grep -rn "googleCalendarOAuth\|GoogleCalendarManager" src main.js` returns nothing.
-- [ ] Upcoming-meetings UI and meeting detection compile and show empty/disabled states with no calendar provider.
-- [ ] `@ai-sdk/google` and `@ai-sdk/google-vertex` remain in package.json.
-- [ ] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
+Superseded by decision 0007 and B-007. Do not execute these obsolete checks:
+- `grep -rn "googleCalendar\|googleapis.com/calendar\|gcal-" src main.js preload.js` returns nothing.
+- `grep -rn "googleCalendarOAuth\|GoogleCalendarManager" src main.js` returns nothing.
+- Upcoming-meetings UI and meeting detection compile and show empty/disabled states with no calendar provider.
+- `@ai-sdk/google` and `@ai-sdk/google-vertex` remain in package.json.
+- `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
 
 ## Verification
 ```bash

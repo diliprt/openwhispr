@@ -29,13 +29,14 @@ Out:
 - Signing/notarization changes (0006).
 
 ## Acceptance criteria
-- [ ] `node scripts/build-macos-calendar-helper.js` compiles the helper binary with exit 0.
-- [ ] Helper `status` subcommand prints valid JSON on a machine without calendar permission (a structured `notDetermined`/`denied` state, not a crash).
-- [ ] With access granted, `events --from <now> --to <+24h>` prints a JSON array (manual runtime check — document the observed output in the brief-completion commit message).
-- [ ] Renderer shows upcoming events when permission is granted, and a clear grant-access state when not.
-- [ ] `grep -n "NSCalendarsUsageDescription" electron-builder.json` matches.
-- [ ] `grep -rn "googleapis\|oauth" src/helpers/appleCalendarManager.js` returns nothing.
-- [ ] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0; add a `test/helpers/appleCalendarManager.test.js` covering event-window filtering logic with the helper mocked.
+Superseded by decision 0007. Do not execute these obsolete checks:
+- `node scripts/build-macos-calendar-helper.js` compiles the helper binary with exit 0.
+- Helper `status` subcommand prints valid JSON on a machine without calendar permission (a structured `notDetermined`/`denied` state, not a crash).
+- With access granted, `events --from <now> --to <+24h>` prints a JSON array (manual runtime check — document the observed output in the brief-completion commit message).
+- Renderer shows upcoming events when permission is granted, and a clear grant-access state when not.
+- `grep -n "NSCalendarsUsageDescription" electron-builder.json` matches.
+- `grep -rn "googleapis\|oauth" src/helpers/appleCalendarManager.js` returns nothing.
+- `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0; add a `test/helpers/appleCalendarManager.test.js` covering event-window filtering logic with the helper mocked.
 
 ## Verification
 ```bash
