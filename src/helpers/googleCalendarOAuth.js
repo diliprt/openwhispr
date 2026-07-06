@@ -7,13 +7,6 @@ const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const CALENDAR_SCOPE =
   "openid email https://www.googleapis.com/auth/calendar.events.readonly https://www.googleapis.com/auth/calendar.calendarlist.readonly";
 const OAUTH_TIMEOUT_MS = 120000;
-const DEFAULT_DESKTOP_CALLBACK_URL = "https://openwhispr.com/auth/desktop-callback";
-
-const PROTOCOL_BY_CHANNEL = {
-  development: "openwhispr-dev",
-  staging: "openwhispr-staging",
-  production: "openwhispr",
-};
 
 class GoogleCalendarOAuth {
   constructor(databaseManager) {
@@ -28,31 +21,74 @@ class GoogleCalendarOAuth {
     return process.env.GOOGLE_CALENDAR_CLIENT_SECRET;
   }
 
-  _getDesktopCallbackUrl() {
-    return process.env.VITE_OPENWHISPR_OAUTH_CALLBACK_URL || DEFAULT_DESKTOP_CALLBACK_URL;
+  isConfigured() {
+    return Boolean(this.getClientId() && this.getClientSecret());
   }
 
-  _getProtocol() {
-    const channel = process.env.OPENWHISPR_CHANNEL || "production";
-    return PROTOCOL_BY_CHANNEL[channel] || PROTOCOL_BY_CHANNEL.production;
+  _sendHtml(res, statusCode, title, message) {
+    res.writeHead(statusCode, { "Content-Type": "text/html; charset=utf-8" });
+    res.end(`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${title}</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: Canvas;
+        color: CanvasText;
+      }
+      main {
+        max-width: 30rem;
+        padding: 2rem;
+        text-align: center;
+      }
+      h1 {
+        margin: 0 0 0.75rem;
+        font-size: 1.35rem;
+      }
+      p {
+        margin: 0;
+        line-height: 1.5;
+        color: color-mix(in srgb, CanvasText 72%, transparent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>${title}</h1>
+      <p>${message}</p>
+    </main>
+  </body>
+</html>`);
   }
 
-  _buildCallbackRedirect(params) {
-    const url = new URL(this._getDesktopCallbackUrl());
-    url.searchParams.set("protocol", this._getProtocol());
-    for (const [key, value] of Object.entries(params)) {
-      url.searchParams.set(key, value);
-    }
-    return url.toString();
+  _sendSuccess(res) {
+    this._sendHtml(
+      res,
+      200,
+      "Google Calendar connected",
+      "Google Calendar connected — you can close this tab."
+    );
   }
 
-  _redirect(res, params) {
-    res.writeHead(302, { Location: this._buildCallbackRedirect(params) });
-    res.end();
+  _sendError(res, message, statusCode = 400) {
+    this._sendHtml(res, statusCode, "Google Calendar connection failed", message);
   }
 
   startOAuthFlow() {
     return new Promise((resolve, reject) => {
+      if (!this.isConfigured()) {
+        reject(new Error("Google Calendar OAuth credentials are not configured"));
+        return;
+      }
+
       const codeVerifier = crypto.randomBytes(32).toString("base64url").slice(0, 43);
       const codeChallenge = crypto.createHash("sha256").update(codeVerifier).digest("base64url");
       const state = crypto.randomBytes(32).toString("hex");
@@ -65,15 +101,14 @@ class GoogleCalendarOAuth {
           const error = url.searchParams.get("error");
 
           if (error) {
-            this._redirect(res, { gcal_error: error });
+            this._sendError(res, "Google rejected the Calendar connection request.");
             cleanup();
             reject(new Error(`OAuth error: ${error}`));
             return;
           }
 
           if (!code || returnedState !== state) {
-            res.writeHead(400, { "Content-Type": "text/html" });
-            res.end("<html><body><h3>Invalid request.</h3></body></html>");
+            this._sendError(res, "Invalid Google Calendar OAuth request.");
             return;
           }
 
@@ -81,7 +116,7 @@ class GoogleCalendarOAuth {
           const tokenData = await this.exchangeCodeForTokens(code, redirectUri, codeVerifier);
 
           if (tokenData.error) {
-            this._redirect(res, { gcal_error: "token_exchange_failed" });
+            this._sendError(res, "Google Calendar token exchange failed.");
             cleanup();
             reject(
               new Error(`Token exchange failed: ${tokenData.error_description || tokenData.error}`)
@@ -100,7 +135,7 @@ class GoogleCalendarOAuth {
           }
 
           if (!email) {
-            this._redirect(res, { gcal_error: "no_email" });
+            this._sendError(res, "Google did not return an email address for this account.");
             cleanup();
             reject(new Error("Could not extract email from Google OAuth response"));
             return;
@@ -115,11 +150,11 @@ class GoogleCalendarOAuth {
             scope: tokenData.scope || CALENDAR_SCOPE,
           });
 
-          this._redirect(res, { gcal_connected: "true" });
+          this._sendSuccess(res);
           cleanup();
           resolve({ success: true, email });
         } catch (err) {
-          this._redirect(res, { gcal_error: "server_error" });
+          this._sendError(res, "OpenWhispr could not complete the Google Calendar connection.");
           cleanup();
           reject(err);
         }

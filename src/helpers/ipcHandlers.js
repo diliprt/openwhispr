@@ -7482,6 +7482,19 @@ class IPCHandlers {
     });
 
     // Google Calendar
+    ipcMain.handle("gcal-open-setup-docs", async () => {
+      try {
+        const docPath = path.join(app.getAppPath(), "docs", "google-calendar-oauth.md");
+        const error = await shell.openPath(docPath);
+        if (error) {
+          return { success: false, error };
+        }
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    });
+
     ipcMain.handle("gcal-start-oauth", async () => {
       try {
         return await this.googleCalendarManager.startOAuth();
@@ -7509,7 +7522,7 @@ class IPCHandlers {
       try {
         return this.googleCalendarManager.getConnectionStatus();
       } catch (error) {
-        return { connected: false, email: null };
+        return { connected: false, accounts: [], configured: false, email: null };
       }
     });
 

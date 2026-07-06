@@ -47,7 +47,6 @@ Contacted only if the user connects Google Calendar in settings.
 | `accounts.google.com`   | HTTPS    | 443  | OAuth authorization.                                        |
 | `oauth2.googleapis.com` | HTTPS    | 443  | OAuth token exchange and revoke.                            |
 | `www.googleapis.com`    | HTTPS    | 443  | Calendar event and calendar list reads.                     |
-| `openwhispr.com`        | HTTPS    | 443  | OAuth desktop callback redirect (`/auth/desktop-callback`). |
 
 ## BYOK provider hosts (only if configured)
 

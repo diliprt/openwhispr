@@ -1,6 +1,6 @@
 # B-007 — Decouple Google Calendar OAuth from openwhispr.com
 
-- Status: ready
+- Status: done
 - Depends on: —
 - Screens: existing Integrations view (Google Calendar card unchanged)
 
@@ -21,11 +21,15 @@ Out:
 - EventKit/Apple Calendar — cancelled with 0002.
 
 ## Acceptance criteria
-- [ ] `grep -rn "openwhispr\.com\|OPENWHISPR_CHANNEL\|desktop-callback" src/helpers/googleCalendarOAuth.js` returns nothing.
-- [ ] OAuth scopes in the file are unchanged: `calendar.events.readonly` and `calendar.calendarlist.readonly` only.
-- [ ] `docs/google-calendar-oauth.md` exists and covers client creation, env vars, and the 7-day testing-mode caveat.
-- [ ] With no `GOOGLE_CALENDAR_CLIENT_ID` set, the Integrations UI shows the setup guidance state (not a crash or silent failure).
-- [ ] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
+- [x] `grep -rn "openwhispr\.com\|OPENWHISPR_CHANNEL\|desktop-callback" src/helpers/googleCalendarOAuth.js` returns nothing.
+- [x] OAuth scopes in the file are unchanged: `calendar.events.readonly` and `calendar.calendarlist.readonly` only.
+- [x] `docs/google-calendar-oauth.md` exists and covers client creation, env vars, and the 7-day testing-mode caveat.
+- [x] With no `GOOGLE_CALENDAR_CLIENT_ID` set, the Integrations UI shows the setup guidance state (not a crash or silent failure).
+- [x] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
+
+## Completion notes
+- Verified no Google Calendar OAuth credentials are configured in local `.env`; the Integrations card now receives `configured: false` from `gcal-get-connection-status` and renders setup guidance with a docs action.
+- Full browser OAuth flow was not run because no local `GOOGLE_CALENDAR_CLIENT_ID` / `GOOGLE_CALENDAR_CLIENT_SECRET` values are configured in this checkout.
 
 ## Verification
 ```bash

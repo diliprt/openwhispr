@@ -1587,11 +1587,13 @@ declare global {
       }>;
 
       // Google Calendar
+      gcalOpenSetupDocs?: () => Promise<{ success: boolean; error?: string }>;
       gcalStartOAuth?: () => Promise<{ success: boolean; email?: string; error?: string }>;
       gcalDisconnect?: (email?: string) => Promise<{ success: boolean; error?: string }>;
       gcalGetConnectionStatus?: () => Promise<{
         connected: boolean;
         accounts: Array<{ email: string }>;
+        configured?: boolean;
         email: string | null;
       }>;
       gcalGetCalendars?: () => Promise<{ success: boolean; calendars: any[] }>;

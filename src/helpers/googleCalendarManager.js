@@ -58,6 +58,10 @@ class GoogleCalendarManager {
     return this.accounts.size > 0;
   }
 
+  isOAuthConfigured() {
+    return this.oauth.isConfigured();
+  }
+
   addAccount(email) {
     this.accounts.set(email, { email });
   }
@@ -114,6 +118,7 @@ class GoogleCalendarManager {
     return {
       connected: accounts.length > 0,
       accounts,
+      configured: this.isOAuthConfigured(),
       // Backwards compat
       email: accounts[0]?.email || null,
     };

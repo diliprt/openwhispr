@@ -877,6 +877,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   broadcastSnippetsUpdated: () => ipcRenderer.invoke("db-broadcast-snippets-updated"),
 
   // Google Calendar
+  gcalOpenSetupDocs: () => ipcRenderer.invoke("gcal-open-setup-docs"),
   gcalStartOAuth: () => ipcRenderer.invoke("gcal-start-oauth"),
   gcalDisconnect: () => ipcRenderer.invoke("gcal-disconnect"),
   gcalGetConnectionStatus: () => ipcRenderer.invoke("gcal-get-connection-status"),

@@ -40,6 +40,7 @@ export default function IntegrationsView({ isPaid, onUpgrade }: IntegrationsView
   const { t } = useTranslation();
   const { gcalAccounts, setGcalAccounts, gcalPrimaryOnly, setGcalPrimaryOnly } = useSettingsStore();
   const [isConnecting, setIsConnecting] = useState(false);
+  const [gcalConfigured, setGcalConfigured] = useState<boolean | null>(null);
   const [disconnectingEmail, setDisconnectingEmail] = useState<string | null>(null);
   const [confirmDisconnectEmail, setConfirmDisconnectEmail] = useState<string | null>(null);
   const [showPermissionDialog, setShowPermissionDialog] = useState(false);
@@ -47,9 +48,15 @@ export default function IntegrationsView({ isPaid, onUpgrade }: IntegrationsView
   const systemAudio = useSystemAudioPermission();
   const { request: requestSystemAudioAccess } = systemAudio;
   const hasAccounts = gcalAccounts.length > 0;
+  const canStartGoogleOAuth = gcalConfigured !== false;
   const needsSystemAudioGrant = !systemAudio.granted && canManageSystemAudioInApp(systemAudio);
 
   const startOAuth = useCallback(async () => {
+    if (!canStartGoogleOAuth) {
+      await window.electronAPI?.gcalOpenSetupDocs?.();
+      return;
+    }
+
     setIsConnecting(true);
     try {
       const result = await window.electronAPI?.gcalStartOAuth?.();
@@ -59,11 +66,13 @@ export default function IntegrationsView({ isPaid, onUpgrade }: IntegrationsView
           ...current.filter((a) => a.email !== result.email),
           { email: result.email },
         ]);
+      } else if (result?.error?.includes("credentials are not configured")) {
+        setGcalConfigured(false);
       }
     } finally {
       setIsConnecting(false);
     }
-  }, [setGcalAccounts]);
+  }, [canStartGoogleOAuth, setGcalAccounts]);
 
   const handleConnect = useCallback(async () => {
     if (needsSystemAudioGrant) {
@@ -91,6 +100,15 @@ export default function IntegrationsView({ isPaid, onUpgrade }: IntegrationsView
   );
 
   useEffect(() => {
+    void window.electronAPI?.gcalGetConnectionStatus?.().then((status) => {
+      if (typeof status?.configured === "boolean") {
+        setGcalConfigured(status.configured);
+      }
+      if (status?.accounts) {
+        setGcalAccounts(status.accounts);
+      }
+    });
+
     const unsub = window.electronAPI?.onGcalConnectionChanged?.(
       (data: {
         accounts?: Array<{ email: string }>;
@@ -139,7 +157,7 @@ export default function IntegrationsView({ isPaid, onUpgrade }: IntegrationsView
                   {t("integrations.googleCalendar.description")}
                 </p>
               </div>
-              {!hasAccounts && (
+              {!hasAccounts && canStartGoogleOAuth && (
                 <Button
                   size="sm"
                   onClick={handleConnect}
@@ -160,6 +178,30 @@ export default function IntegrationsView({ isPaid, onUpgrade }: IntegrationsView
               )}
             </div>
           </SettingsPanelRow>
+
+          {!hasAccounts && gcalConfigured === false && (
+            <SettingsPanelRow>
+              <div className="flex items-start gap-3 pl-12">
+                <Info size={15} className="text-primary/70 shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-foreground/85">
+                    {t("integrations.googleCalendar.setupRequired")}
+                  </p>
+                  <p className="text-xs text-muted-foreground/65 mt-0.5 leading-relaxed">
+                    {t("integrations.googleCalendar.setupDescription")}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => window.electronAPI?.gcalOpenSetupDocs?.()}
+                  className="shrink-0"
+                >
+                  {t("integrations.googleCalendar.setupDocs")}
+                </Button>
+              </div>
+            </SettingsPanelRow>
+          )}
 
           {hasAccounts &&
             gcalAccounts.map((account) => (
