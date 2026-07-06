@@ -85,12 +85,10 @@
     "desktop-app"
   ],
   "author": {
-    "name": "OpenWhispr Team",
-    "email": "support@openwhispr.com"
+    "name": "OpenWhispr"
   },
   "license": "MIT",
   "devDependencies": {
-    "@electron/notarize": "^3.0.1",
     "@eslint/js": "^9.39.4",
     "@tailwindcss/vite": "^4.2.2",
     "@types/react": "^19.1.2",

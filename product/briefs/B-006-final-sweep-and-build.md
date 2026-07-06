@@ -1,6 +1,6 @@
 # B-006 — Final sweep: dead code, locales, dependencies, unsigned build
 
-- Status: ready
+- Status: done
 - Depends on: B-001, B-002, B-003, B-007
 - Screens: none (cleanup + build proof)
 
@@ -22,12 +22,12 @@ Out:
 - Removing GitHub Actions release workflows (leave dormant per 0006 unless they break CI).
 
 ## Acceptance criteria
-- [ ] All B-001…B-003 and B-007 grep gates still pass (run them all; they are the regression net):
+- [x] All B-001…B-003 and B-007 grep gates still pass (run them all; they are the regression net):
       `grep -rn "openwhispr\.com\|OPENWHISPR_API_URL\|better-auth\|telemetryEnabled" src main.js preload.js` returns nothing.
-- [ ] `grep -rn "from-cloud\|mark-.*-synced" src/helpers/ipcHandlers.js` returns nothing.
-- [ ] No locale file contains a key with zero callers among the removed feature areas (spot-check script or manual grep per removed key group).
-- [ ] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
-- [ ] `CSC_IDENTITY_AUTO_DISCOVERY=false npm run build:mac` exits 0 and produces an unsigned .app under `dist/`.
+- [x] `grep -rn "from-cloud\|mark-.*-synced" src/helpers/ipcHandlers.js` returns nothing.
+- [x] No locale file contains a key with zero callers among the removed feature areas (spot-check script or manual grep per removed key group).
+- [x] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
+- [x] `CSC_IDENTITY_AUTO_DISCOVERY=false npm run build:mac` exits 0 and produces an unsigned .app under `dist/`.
 
 ## Verification
 ```bash
