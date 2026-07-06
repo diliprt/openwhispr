@@ -761,8 +761,6 @@ export default function SettingsPage({
     setPanelStartPosition,
     cloudBackupEnabled,
     setCloudBackupEnabled,
-    telemetryEnabled,
-    setTelemetryEnabled,
     audioRetentionDays,
     setAudioRetentionDays,
     dataRetentionEnabled,
@@ -3436,16 +3434,6 @@ EOF`,
                 </div>
               )}
 
-              <SettingsPanel>
-                <SettingsPanelRow>
-                  <SettingsRow
-                    label={t("settingsPage.privacy.usageAnalytics")}
-                    description={t("settingsPage.privacy.usageAnalyticsDescription")}
-                  >
-                    <Toggle checked={telemetryEnabled} onChange={setTelemetryEnabled} />
-                  </SettingsRow>
-                </SettingsPanelRow>
-              </SettingsPanel>
             </div>
 
             {/* Audio Retention */}

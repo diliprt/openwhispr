@@ -1137,7 +1137,7 @@
         "label": "Language Models"
       },
       "privacyData": {
-        "description": "Privacy, permissions & analytics",
+        "description": "Privacy & permissions",
         "label": "Privacy & Data"
       },
       "system": {
@@ -1770,8 +1770,6 @@
       "cloudNotesMigrationDone": "All notes backed up",
       "description": "Control what data leaves your device. Everything is off by default.",
       "title": "Privacy",
-      "usageAnalytics": "Usage analytics",
-      "usageAnalyticsDescription": "Help us improve OpenWhispr by sharing anonymous performance metrics. We never send transcription content — only timing and error data.",
       "audioRetention": "Audio Retention",
       "audioRetentionDescription": "Store audio recordings locally for re-transcription and download. Files are automatically deleted after the retention period.",
       "audioRetentionDisabled": "Disabled",

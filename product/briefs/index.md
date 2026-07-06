@@ -12,7 +12,7 @@
 
 | ID | Title | Status | Depends on | Assigned to |
 |---|---|---|---|---|
-| B-001 | [Remove telemetry setting](B-001-remove-telemetry.md) | ready | — | |
+| B-001 | [Remove telemetry setting](B-001-remove-telemetry.md) | done | — | |
 | B-002 | [Remove authentication and the account concept](B-002-remove-auth-accounts.md) | ready | — | |
 | B-007 | [Decouple Google Calendar OAuth from openwhispr.com](B-007-decouple-gcal-oauth.md) | ready | — | |
 | B-003 | [Remove vendor cloud services: sync, billing, usage, workspaces, sharing](B-003-remove-vendor-cloud-services.md) | ready | B-002, B-007 | |

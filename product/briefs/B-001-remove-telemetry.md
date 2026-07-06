@@ -1,6 +1,6 @@
 # B-001 — Remove telemetry setting
 
-- Status: ready
+- Status: done
 - Depends on: —
 - Screens: existing Settings page (no new screens)
 
@@ -20,9 +20,9 @@ Out:
 - Any auth/cloud removal — that is B-002/B-003.
 
 ## Acceptance criteria
-- [ ] `grep -rn "telemetryEnabled\|setTelemetryEnabled\|sendLogs" src main.js preload.js` returns nothing (if `sendLogs` is telemetry-unrelated, document why in the commit message and exempt it).
-- [ ] Settings UI renders with no telemetry/analytics toggle.
-- [ ] `npm run lint`, `npm run typecheck`, and `node --test test/helpers/` all exit 0.
+- [x] `grep -rn "telemetryEnabled\|setTelemetryEnabled\|sendLogs" src main.js preload.js` returns nothing (if `sendLogs` is telemetry-unrelated, document why in the commit message and exempt it).
+- [x] Settings UI renders with no telemetry/analytics toggle.
+- [x] `npm run lint`, `npm run typecheck`, and `node --test test/helpers/` all exit 0.
 
 ## Verification
 ```bash

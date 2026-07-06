@@ -74,7 +74,6 @@ export interface ApiKeySettings {
 
 export interface PrivacySettings {
   cloudBackupEnabled: boolean;
-  telemetryEnabled: boolean;
   audioRetentionDays: number;
   dataRetentionEnabled: boolean;
   saveDiscardedTranscriptions: boolean;
@@ -349,8 +348,6 @@ function useSettingsInternal() {
     setWhisperVadSamplesOverlap: store.setWhisperVadSamplesOverlap,
     cloudBackupEnabled: store.cloudBackupEnabled,
     setCloudBackupEnabled: store.setCloudBackupEnabled,
-    telemetryEnabled: store.telemetryEnabled,
-    setTelemetryEnabled: store.setTelemetryEnabled,
     audioRetentionDays: store.audioRetentionDays,
     setAudioRetentionDays: store.setAudioRetentionDays,
     dataRetentionEnabled: store.dataRetentionEnabled,
