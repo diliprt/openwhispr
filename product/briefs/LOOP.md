@@ -6,8 +6,9 @@ Self-terminating loop for any build agent. All work happens on branch `local-fir
 ## One iteration
 
 1. `git checkout local-first && git pull --rebase origin local-first || true`
-2. Read `product/briefs/index.md`. Pick the lowest-ID brief whose status is `ready` and whose
-   every "Depends on" entry is `done`. If none exists, go to **Exit check**.
+2. Read `product/briefs/index.md`. Pick the topmost brief in the table whose status is `ready`
+   and whose every "Depends on" entry is `done` (`superseded` briefs are never picked and
+   never block). If none exists, go to **Exit check**.
 3. Set that brief's status to `in-progress` in `index.md`. Read the brief file fully, plus every
    decision record it references. Comply with all "Constraints for agents".
 4. Execute the brief's Scope. Touch nothing listed under Out.
@@ -28,8 +29,8 @@ grep -E "\| (ready|in-progress|draft) \|" product/briefs/index.md && echo "NOT D
 grep -rn "\[ \]" product/briefs/B-*.md && echo "NOT DONE" || echo "boxes done"
 # 3. Quality gates green:
 npm run lint && npm run typecheck && node --test test/helpers/
-# 4. Decision-record grep gates:
-grep -rn "openwhispr\.com\|OPENWHISPR_API_URL\|better-auth\|telemetryEnabled\|googleCalendar\|gcal-" src main.js preload.js && echo "NOT DONE" || echo "gates clean"
+# 4. Decision-record grep gates (Google Calendar code is KEPT per decision 0007):
+grep -rn "openwhispr\.com\|OPENWHISPR_API_URL\|better-auth\|telemetryEnabled" src main.js preload.js && echo "NOT DONE" || echo "gates clean"
 ```
 
 All four green → the loop is complete. Print a final report (briefs done, commits made,

@@ -1,7 +1,7 @@
 # B-003 — Remove vendor cloud services: sync, billing, usage, workspaces, sharing
 
 - Status: ready
-- Depends on: B-002
+- Depends on: B-002, B-007 (B-007 removes the openwhispr.com reference inside googleCalendarOAuth.js — this brief's grep gate cannot pass before it)
 - Screens: existing Settings page (Workspace/Billing tabs removed), Notes views (share-to-cloud removed)
 
 ## Goal

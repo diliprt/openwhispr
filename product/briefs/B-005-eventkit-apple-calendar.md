@@ -1,6 +1,9 @@
 # B-005 — Apple Calendar via a read-only EventKit Swift helper
 
-- Status: ready
+> WITHDRAWN 2026-07-05: decision 0002 was superseded by 0007 (keep Google Calendar).
+> Do not execute this brief.
+
+- Status: superseded
 - Depends on: B-004
 - Screens: existing Integrations view (Apple Calendar card), Upcoming Meetings surface
 

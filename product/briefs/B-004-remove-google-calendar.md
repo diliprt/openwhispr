@@ -1,6 +1,9 @@
 # B-004 — Remove Google Calendar integration
 
-- Status: ready
+> WITHDRAWN 2026-07-05: decision 0002 was superseded by 0007 (keep Google Calendar).
+> Do not execute this brief. Replacement work: B-007.
+
+- Status: superseded
 - Depends on: —
 - Screens: existing Integrations view, Upcoming Meetings surface (temporarily empty until B-005)
 

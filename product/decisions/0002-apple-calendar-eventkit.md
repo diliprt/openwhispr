@@ -1,6 +1,6 @@
 # 0002 — Replace Google Calendar with Apple Calendar via a native EventKit helper
 
-- Status: accepted
+- Status: superseded by 0007
 - Date: 2026-07-05
 
 ## Context
