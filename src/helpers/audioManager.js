@@ -7,7 +7,6 @@ import {
   isAzureOpenAIEndpoint,
   buildAzureTranscriptionUrl,
 } from "../utils/urlUtils";
-import { withSessionRefresh } from "../lib/auth";
 import { getBaseLanguageCode } from "../utils/languageSupport";
 import {
   createLocalSpeechGateState,
@@ -36,6 +35,7 @@ import { getDictionaryHintWords } from "../utils/snippets";
 const REASONING_CACHE_TTL = 30000; // 30 seconds
 const RECORDING_TIMESLICE_MS = 250; // flush chunks periodically so short recordings still carry audio frames. See #871.
 const REALTIME_MODELS = new Set(["gpt-4o-mini-transcribe", "gpt-4o-transcribe"]);
+const runCloudOperation = async (operation) => operation();
 
 function dictationAgentReachable(settings) {
   return resolveDictationAgentReachability({
@@ -1534,9 +1534,9 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
     const dictionaryPrompt = this.getCustomDictionaryPrompt();
     if (dictionaryPrompt) opts.prompt = dictionaryPrompt;
 
-    // Use withSessionRefresh to handle AUTH_EXPIRED automatically
+    // Run cloud transcription without account session refresh
     const transcriptionStart = performance.now();
-    const result = await withSessionRefresh(async () => {
+    const result = await runCloudOperation(async () => {
       const res = await window.electronAPI.cloudTranscribe(arrayBuffer, opts);
       if (!res.success) {
         const err = new Error(res.error || "Cloud transcription failed");
@@ -1573,7 +1573,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
           );
           if (reasoned) processedText = reasoned;
         } else if (route.kind === "cleanup" && cleanupCloudMode === "openwhispr") {
-          const reasonResult = await withSessionRefresh(async () => {
+          const reasonResult = await runCloudOperation(async () => {
             const res = await window.electronAPI.cloudReason(processedText, {
               agentName,
               customDictionary: getDictionaryHintWords(settings),
@@ -2483,7 +2483,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
       const provider = this.getStreamingProvider();
       const [, wsResult] = await Promise.all([
         this.cacheMicrophoneDeviceId(),
-        withSessionRefresh(async () => {
+        runCloudOperation(async () => {
           const {
             preferredLanguage: warmupLang,
             cloudTranscriptionModel,
@@ -2719,7 +2719,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
       // 4. Connect WebSocket — audio is already flowing from the pipeline above,
       //    so Deepgram receives data immediately (no idle timeout).
-      const result = await withSessionRefresh(async () => {
+      const result = await runCloudOperation(async () => {
         const {
           preferredLanguage: preferredLang,
           cloudTranscriptionModel,
@@ -2994,7 +2994,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
             "streaming"
           );
         } else if (route.kind === "cleanup" && cleanupCloudMode === "openwhispr") {
-          const reasonResult = await withSessionRefresh(async () => {
+          const reasonResult = await runCloudOperation(async () => {
             const res = await window.electronAPI.cloudReason(finalText, {
               agentName,
               customDictionary: getDictionaryHintWords(stSettings),
@@ -3100,7 +3100,7 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
       if (!usedBatchFallback) {
         (async () => {
           try {
-            await withSessionRefresh(async () => {
+            await runCloudOperation(async () => {
               const res = await window.electronAPI.cloudStreamingUsage(
                 finalText,
                 durationSeconds ?? 0,

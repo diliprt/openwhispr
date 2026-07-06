@@ -11,7 +11,6 @@ import {
 } from "../ui/dropdown-menu";
 import { cn } from "../lib/utils";
 import ShareVisibilityMenu from "./ShareVisibilityMenu";
-import { useAuth } from "../../hooks/useAuth";
 import { NoteSharingService } from "../../services/NoteSharingService.js";
 import { setShareCache, updateShareCache, useShareCacheEntry } from "../../stores/noteStore";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
@@ -34,13 +33,9 @@ interface ShareNoteDialogProps {
 }
 
 export default function ShareNoteDialog({ open, onOpenChange, note }: ShareNoteDialogProps) {
-  const { user } = useAuth();
-  const ownerName: string | null = user?.name ?? null;
-  const ownerEmail: string = user?.email ?? "";
-  // The desktop has no concept of multi-user workspaces yet — the signed-in
-  // user is always the note owner. When workspaces ship, this becomes a
-  // server-side flag in the share settings response.
-  const isOwner = Boolean(user);
+  const ownerName: string | null = null;
+  const ownerEmail = "";
+  const isOwner = false;
   const { t } = useTranslation();
   const cloudId = note.cloud_id;
   const cached = useShareCacheEntry(cloudId);

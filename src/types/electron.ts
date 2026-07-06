@@ -1137,10 +1137,6 @@ declare global {
       setAutoStartEnabled?: (enabled: boolean) => Promise<{ success: boolean; error?: string }>;
 
       // Auth
-      authClearSession?: () => Promise<void>;
-      authGetToken?: () => Promise<string | null>;
-      authSetToken?: (token: string) => Promise<void>;
-
       // OpenWhispr Cloud API
       cloudTranscribe?: (
         audioBuffer: ArrayBuffer,

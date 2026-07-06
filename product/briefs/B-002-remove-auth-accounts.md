@@ -1,6 +1,6 @@
 # B-002 — Remove authentication and the account concept
 
-- Status: ready
+- Status: done
 - Depends on: —
 - Screens: existing Onboarding flow, Settings page, Control Panel (no new screens)
 
@@ -21,11 +21,11 @@ Out:
 - `VITE_AUTH_URL` doc mentions in README/docs (B-006 sweep).
 
 ## Acceptance criteria
-- [ ] `grep -rn "better-auth" src package.json` returns nothing.
-- [ ] `grep -rn "authClient\|authGetToken\|authSetToken\|auth-get-token\|auth-set-token\|auth-clear-session" src main.js preload.js` returns nothing.
-- [ ] Onboarding flow compiles with the auth step removed and reaches local model setup directly.
-- [ ] No component renders a sign-in, sign-up, or sign-out affordance.
-- [ ] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
+- [x] `grep -rn "better-auth" src package.json` returns nothing.
+- [x] `grep -rn "authClient\|authGetToken\|authSetToken\|auth-get-token\|auth-set-token\|auth-clear-session" src main.js preload.js` returns nothing.
+- [x] Onboarding flow compiles with the auth step removed and reaches local model setup directly.
+- [x] No component renders a sign-in, sign-up, or sign-out affordance.
+- [x] `npm run lint`, `npm run typecheck`, `node --test test/helpers/` all exit 0.
 
 ## Verification
 ```bash

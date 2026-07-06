@@ -1,5 +1,4 @@
 import type { InferenceProvider } from "./types";
-import { withSessionRefresh } from "../../../lib/auth";
 import { getSettings } from "../../../stores/settingsStore";
 import logger from "../../../utils/logger";
 
@@ -12,35 +11,31 @@ export const openwhisprProvider: InferenceProvider = {
       ? undefined
       : getSettings().customPrompts.cleanup || undefined;
 
-    const result = await withSessionRefresh(async () => {
-      const res = await window.electronAPI?.cloudReason?.(text, {
-        agentName,
-        customDictionary: ctx.getCustomDictionary(),
-        customPrompt,
-        systemPrompt: config.systemPrompt,
-        language: ctx.getPreferredLanguage(),
-        locale: ctx.getUiLanguage(),
-      });
-
-      if (!res?.success) {
-        const err: Error & { code?: string } = new Error(
-          res?.error || "OpenWhispr cloud reasoning failed"
-        );
-        err.code = res?.code;
-        throw err;
-      }
-
-      return res;
+    const res = await window.electronAPI?.cloudReason?.(text, {
+      agentName,
+      customDictionary: ctx.getCustomDictionary(),
+      customPrompt,
+      systemPrompt: config.systemPrompt,
+      language: ctx.getPreferredLanguage(),
+      locale: ctx.getUiLanguage(),
     });
+
+    if (!res?.success) {
+      const err: Error & { code?: string } = new Error(
+        res?.error || "OpenWhispr cloud reasoning failed"
+      );
+      err.code = res?.code;
+      throw err;
+    }
 
     logger.logReasoning("OPENWHISPR_SUCCESS", {
-      model: result.model,
-      provider: result.provider,
-      resultLength: result.text.length,
-      promptMode: result.promptMode,
-      matchType: result.matchType,
+      model: res.model,
+      provider: res.provider,
+      resultLength: res.text.length,
+      promptMode: res.promptMode,
+      matchType: res.matchType,
     });
 
-    return result.text;
+    return res.text;
   },
 };
